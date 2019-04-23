@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Averta-Regular.otf">
+            <string>Averta-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GalleryItemCollectionViewCell" id="BCU-ei-fme" customClass="GalleryItemCollectionViewCell" customModule="InTheKnow" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="107" height="107"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                <rect key="frame" x="0.0" y="0.0" width="107" height="107"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Jic-03-yjC">
+                        <rect key="frame" x="0.0" y="0.0" width="107" height="107"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadiusPercentage">
+                                <real key="value" value="7"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jHu-ci-O0R" userLabel="Video overlay">
+                        <rect key="frame" x="0.0" y="87" width="107" height="20"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="upload-intro-small-video-icon" translatesAutoresizingMaskIntoConstraints="NO" id="yB8-3Z-rdU">
+                                <rect key="frame" x="5" y="5" width="15" height="10"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tmd-QB-TIs">
+                                <rect key="frame" x="69" y="4" width="33" height="12"/>
+                                <fontDescription key="fontDescription" name="Averta-Regular" family="Averta-Regular" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="yB8-3Z-rdU" firstAttribute="centerY" secondItem="jHu-ci-O0R" secondAttribute="centerY" id="83P-OH-mon"/>
+                            <constraint firstAttribute="trailing" secondItem="Tmd-QB-TIs" secondAttribute="trailing" constant="5" id="NmX-HY-HGg"/>
+                            <constraint firstAttribute="height" constant="20" id="Nqx-OS-jEU"/>
+                            <constraint firstItem="Tmd-QB-TIs" firstAttribute="centerY" secondItem="jHu-ci-O0R" secondAttribute="centerY" id="ZdD-2T-whU"/>
+                            <constraint firstItem="yB8-3Z-rdU" firstAttribute="leading" secondItem="jHu-ci-O0R" secondAttribute="leading" constant="5" id="lUk-LS-ghR"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="Jic-03-yjC" secondAttribute="trailing" id="HjG-IK-hfB"/>
+                <constraint firstAttribute="bottom" secondItem="jHu-ci-O0R" secondAttribute="bottom" id="IxZ-6a-hBe"/>
+                <constraint firstAttribute="trailing" secondItem="jHu-ci-O0R" secondAttribute="trailing" id="RB8-uo-Bn4"/>
+                <constraint firstAttribute="bottom" secondItem="Jic-03-yjC" secondAttribute="bottom" id="jY7-Nt-DJN"/>
+                <constraint firstItem="Jic-03-yjC" firstAttribute="top" secondItem="BCU-ei-fme" secondAttribute="top" id="oFX-EY-ztz"/>
+                <constraint firstItem="jHu-ci-O0R" firstAttribute="leading" secondItem="BCU-ei-fme" secondAttribute="leading" id="oUh-R8-6rF"/>
+                <constraint firstItem="Jic-03-yjC" firstAttribute="leading" secondItem="BCU-ei-fme" secondAttribute="leading" id="rZW-qd-ec6"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="lXj-Tt-rd2"/>
+            <size key="customSize" width="115" height="108"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadiusPercentage">
+                    <real key="value" value="7"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="durationLabel" destination="Tmd-QB-TIs" id="TT4-cx-CcH"/>
+                <outlet property="durationOverlayView" destination="jHu-ci-O0R" id="mXm-j5-eMm"/>
+                <outlet property="photoImageView" destination="Jic-03-yjC" id="wbG-IG-LEk"/>
+            </connections>
+            <point key="canvasLocation" x="189.59999999999999" y="170.46476761619192"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="upload-intro-small-video-icon" width="15" height="10"/>
+    </resources>
+</document>
