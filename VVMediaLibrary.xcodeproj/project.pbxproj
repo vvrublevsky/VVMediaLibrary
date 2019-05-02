@@ -18,6 +18,9 @@
 		61B04545226867F700E65228 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B04543226867F700E65228 /* Main.storyboard */; };
 		61B04547226867F800E65228 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B04546226867F800E65228 /* Assets.xcassets */; };
 		61B0454A226867F800E65228 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B04548226867F800E65228 /* LaunchScreen.storyboard */; };
+		61B89534227329840003EF8F /* Int+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B89533227329840003EF8F /* Int+String.swift */; };
+		61B8953822735EEB0003EF8F /* GalleryAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B8953722735EEB0003EF8F /* GalleryAlbum.swift */; };
+		61D4C26C227B50F80097D8CB /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D4C26B227B50F80097D8CB /* UIViewController+Alert.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +37,9 @@
 		61B04546226867F800E65228 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		61B04549226867F800E65228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		61B0454B226867F800E65228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61B89533227329840003EF8F /* Int+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+String.swift"; sourceTree = "<group>"; };
+		61B8953722735EEB0003EF8F /* GalleryAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAlbum.swift; sourceTree = "<group>"; };
+		61D4C26B227B50F80097D8CB /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
 		AC0E0F9BFA747585F0F7CCBF /* Pods-VVMediaLibrary.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VVMediaLibrary.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VVMediaLibrary/Pods-VVMediaLibrary.debug.xcconfig"; sourceTree = "<group>"; };
 		CB501F33C96C4820027C9FCE /* Pods-VVMediaLibrary.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VVMediaLibrary.release.xcconfig"; path = "Pods/Target Support Files/Pods-VVMediaLibrary/Pods-VVMediaLibrary.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,7 +67,9 @@
 		610F0006226F2A67001A94E9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				610F0007226F2A75001A94E9 /* Array+Subscript.swift */,
+				61D4C26A227B50EB0097D8CB /* ViewController */,
+				61B89535227329910003EF8F /* Array */,
+				61B89532227329770003EF8F /* Int */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -75,11 +83,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		610F000A226F2C64001A94E9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				61B0453F226867F700E65228 /* AppDelegate.swift */,
+				61B04546226867F800E65228 /* Assets.xcassets */,
+				61B04548226867F800E65228 /* LaunchScreen.storyboard */,
+				61B0454B226867F800E65228 /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		61AE17AF226E1AD300DCCB5A /* GalleryAlbumCollectionViewCell */ = {
 			isa = PBXGroup;
 			children = (
-				61AE17B0226E1AD300DCCB5A /* GalleryAlbumCollectionViewCell.xib */,
 				61AE17B1226E1AD300DCCB5A /* GalleryAlbumCollectionViewCell.swift */,
+				61AE17B0226E1AD300DCCB5A /* GalleryAlbumCollectionViewCell.xib */,
 			);
 			path = GalleryAlbumCollectionViewCell;
 			sourceTree = "<group>";
@@ -87,8 +106,8 @@
 		61AE17B4226E1ADD00DCCB5A /* GalleryItemCollectionViewCell */ = {
 			isa = PBXGroup;
 			children = (
-				61AE17B5226E1ADD00DCCB5A /* GalleryItemCollectionViewCell.xib */,
 				61AE17B6226E1ADD00DCCB5A /* GalleryItemCollectionViewCell.swift */,
+				61AE17B5226E1ADD00DCCB5A /* GalleryItemCollectionViewCell.xib */,
 			);
 			path = GalleryItemCollectionViewCell;
 			sourceTree = "<group>";
@@ -114,16 +133,46 @@
 		61B0453E226867F700E65228 /* VVMediaLibrary */ = {
 			isa = PBXGroup;
 			children = (
-				61B0453F226867F700E65228 /* AppDelegate.swift */,
 				61B04541226867F700E65228 /* ViewController.swift */,
 				61B04543226867F700E65228 /* Main.storyboard */,
+				61B8953622735EE00003EF8F /* Models */,
 				610F0009226F2AB5001A94E9 /* Views */,
 				610F0006226F2A67001A94E9 /* Extensions */,
-				61B04546226867F800E65228 /* Assets.xcassets */,
-				61B04548226867F800E65228 /* LaunchScreen.storyboard */,
-				61B0454B226867F800E65228 /* Info.plist */,
+				610F000A226F2C64001A94E9 /* Supporting Files */,
 			);
 			path = VVMediaLibrary;
+			sourceTree = "<group>";
+		};
+		61B89532227329770003EF8F /* Int */ = {
+			isa = PBXGroup;
+			children = (
+				61B89533227329840003EF8F /* Int+String.swift */,
+			);
+			path = Int;
+			sourceTree = "<group>";
+		};
+		61B89535227329910003EF8F /* Array */ = {
+			isa = PBXGroup;
+			children = (
+				610F0007226F2A75001A94E9 /* Array+Subscript.swift */,
+			);
+			path = Array;
+			sourceTree = "<group>";
+		};
+		61B8953622735EE00003EF8F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				61B8953722735EEB0003EF8F /* GalleryAlbum.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		61D4C26A227B50EB0097D8CB /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				61D4C26B227B50F80097D8CB /* UIViewController+Alert.swift */,
+			);
+			path = ViewController;
 			sourceTree = "<group>";
 		};
 		DF991946516B301FE3C34A36 /* Pods */ = {
@@ -252,8 +301,11 @@
 				61AE17B8226E1ADD00DCCB5A /* GalleryItemCollectionViewCell.swift in Sources */,
 				610F0008226F2A75001A94E9 /* Array+Subscript.swift in Sources */,
 				61B04542226867F700E65228 /* ViewController.swift in Sources */,
+				61B8953822735EEB0003EF8F /* GalleryAlbum.swift in Sources */,
 				61AE17B3226E1AD300DCCB5A /* GalleryAlbumCollectionViewCell.swift in Sources */,
+				61B89534227329840003EF8F /* Int+String.swift in Sources */,
 				61B04540226867F700E65228 /* AppDelegate.swift in Sources */,
+				61D4C26C227B50F80097D8CB /* UIViewController+Alert.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,7 +454,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 75L4K28KXH;
-				INFOPLIST_FILE = VVMediaLibrary/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/VVMediaLibrary/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -421,7 +473,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 75L4K28KXH;
-				INFOPLIST_FILE = VVMediaLibrary/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/VVMediaLibrary/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

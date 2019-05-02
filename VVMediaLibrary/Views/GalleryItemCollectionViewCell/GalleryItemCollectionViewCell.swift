@@ -11,11 +11,15 @@ import Reusable
 
 class GalleryItemCollectionViewCell: UICollectionViewCell, NibReusable {
     
+    // MARK: IBOutlets
+    
     @IBOutlet private var durationOverlayView: UIView!
     
     @IBOutlet private var durationLabel: UILabel!
     
     @IBOutlet private var photoImageView: UIImageView!
+    
+    // MARK: Variables
     
     var preview: UIImage? {
         didSet {

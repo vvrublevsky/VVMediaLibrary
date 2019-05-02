@@ -14,7 +14,9 @@ class GalleryAlbumCollectionViewCell: UICollectionViewCell, NibReusable {
     // MARK: IBOutlets
     
     @IBOutlet private var albumImageView: UIImageView!
+    
     @IBOutlet private var titleLabel: UILabel!
+    
     @IBOutlet private var photosCountLabel: UILabel!
     
     // MARK: Variables

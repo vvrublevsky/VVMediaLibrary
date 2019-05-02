@@ -8,27 +8,23 @@
 
 import UIKit
 import Photos
+import Reusable
 
-class GalleryAlbum {
-    var collection: PHAssetCollection
-    var thumbnail: UIImage?
-    var assets: [PHAsset] = []
-    var assetsThumbnails: [UIImage] = []
-    
-    init(collection: PHAssetCollection) {
-        self.collection = collection
-    }
+protocol GalleryDelegate: class {
+    func didSelectPhotoFromGallery(_ photo: UIImage)
+    func didSelectVideoFromGallery(_ video: PHAsset)
+    func didDismissGallery()
 }
 
 class GalleryViewController: UIViewController {
     
     enum MediaType: Int {
-        case all
+        case any
         case photos
         case videos
     }
     
-    enum ContentType {
+    private enum ContentType {
         case albums
         case mediaItems
     }
@@ -48,37 +44,36 @@ class GalleryViewController: UIViewController {
     
     @IBOutlet private var contentCollectionView: UICollectionView! {
         didSet {
-//            contentCollectionView.register(cellType: GalleryAlbumCollectionViewCell.self)
-//            contentCollectionView.register(cellType: GalleryItemCollectionViewCell.self)
+            contentCollectionView.register(cellType: GalleryAlbumCollectionViewCell.self)
+            contentCollectionView.register(cellType: GalleryItemCollectionViewCell.self)
         }
     }
     
-    @IBOutlet private var refreshAnimationImageView: UIImageView!
+    @IBOutlet private var activityIndicatorView: UIActivityIndicatorView!
     
     // MARK: Public variables
     
     var mediaType: MediaType = .photos
     
-    var onPhotoDidSelectCompletion: ((_ photo: UIImage) -> Void)?
-    var onVideoDidSelectCompletion: ((_ video: PHAsset) -> Void)?
-    var onDismissCompletion: (() -> Void)?
+    weak var delegate: GalleryDelegate?
     
     // MARK: Private variables
     
-    fileprivate var contentType: ContentType = .albums {
+    private var contentType: ContentType = .albums {
         didSet {
             contentCollectionView.reloadData()
+            
             arrowImageView.image = contentType == .albums ? UIImage(named: "up-icon") : UIImage(named: "dropdown-icon")
         }
     }
     
-    fileprivate var albums: [GalleryAlbum] = []
+    private var albumsDataSource: [GalleryAlbum] = []
     
-    fileprivate var selectedAlbum: GalleryAlbum?
+    private var selectedAlbum: GalleryAlbum?
     
-    fileprivate var networkGroup: DispatchGroup = DispatchGroup()
+    private var networkGroup: DispatchGroup = DispatchGroup()
     
-    fileprivate lazy var downloadQueue: OperationQueue = {
+    private lazy var downloadQueue: OperationQueue = {
         var queue = OperationQueue()
         queue.name = "Download queue"
         queue.maxConcurrentOperationCount = 50
@@ -90,15 +85,13 @@ class GalleryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupRefreshAnimation()
-        
         prepareAlbums()
     }
     
     // MARK: IBActions
     
     @IBAction private func didPressCloseButton() {
-        onDismissCompletion?()
+        delegate?.didDismissGallery()
     }
     
     @IBAction private func didPressSelectAlbumButton() {
@@ -109,37 +102,22 @@ class GalleryViewController: UIViewController {
 // MARK: - Albums Setup
 
 private extension GalleryViewController {
-    
     func prepareAlbums() {
         PHPhotoLibrary.requestAuthorization { [weak self] status in
             DispatchQueue.main.async {
                 if status == .authorized {
                     self?.fetchAlbums()
+                } else {
+                    self?.presentAlert("Oops", "Please provide photo library access.")
                 }
             }
         }
     }
     
-    func displayAlbum(_ album: GalleryAlbum) {
-        selectedAlbum = album
-        albumTitleLabel.text = album.collection.localizedTitle
-        
-        setupRefreshAnimation()
-        contentCollectionView.isHidden = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.contentType = .mediaItems
-            self.contentCollectionView.reloadData()
-            self.contentCollectionView.isHidden = false
-            self.stopRefreshAnimation()
-        }
-    }
-    
     private func fetchAlbums() {
-        
         let collections = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .any, options: nil)
         
-        albums = []
+        albumsDataSource = []
         
         let assetsFetchOptions = PHFetchOptions()
         assetsFetchOptions.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
@@ -157,24 +135,23 @@ private extension GalleryViewController {
                 let album = GalleryAlbum(collection: assetCollection)
                 album.assets = content
                 
-                self.albums.append(album)
+                self.albumsDataSource.append(album)
             }
         }
         
-        albums.sort { $0.collection.localizedTitle ?? "" < $1.collection.localizedTitle ?? "" }
+        albumsDataSource.sort { $0.collection.localizedTitle ?? "" < $1.collection.localizedTitle ?? "" }
         
         fetchAlbumsThumbnails {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+                self.stopRefreshAnimation()
                 self.contentCollectionView.isHidden = false
                 self.contentCollectionView.reloadData()
-                self.stopRefreshAnimation()
             })
         }
     }
     
     private func fetchAlbumsThumbnails(completion: @escaping (()->Void)) {
-        
-        for album in albums {
+        for album in albumsDataSource {
             networkGroup.enter()
             
             let size = CGSize(width: CollectionConstants.albumsCollectionItemHeight,
@@ -205,21 +182,6 @@ private extension GalleryViewController {
             completion(result)
         })
     }
-    
-    private func thumbnailSizeForContent(_ contentType: ContentType) -> CGSize {
-        switch contentType {
-        case .albums:
-            return CGSize(width: CollectionConstants.albumsCollectionItemHeight,
-                          height: CollectionConstants.albumsCollectionItemHeight)
-            
-        case .mediaItems:
-            let cellWidth = (view.bounds.width - CollectionConstants.itemInset * 4)/3
-            let cellHeight = cellWidth
-            
-            return CGSize(width: cellWidth,
-                          height: cellHeight)
-        }
-    }
 }
 
 // MARK: UICollectionView DataSource
@@ -228,7 +190,7 @@ extension GalleryViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch contentType {
         case .albums:
-            return albums.count
+            return albumsDataSource.count
         case .mediaItems:
             return selectedAlbum?.assets.count ?? 0
         }
@@ -237,7 +199,7 @@ extension GalleryViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch contentType {
         case .albums:
-            let album = albums[indexPath.row]
+            let album = albumsDataSource[indexPath.row]
             let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: GalleryAlbumCollectionViewCell.self)
             cell.title = album.collection.localizedTitle
             cell.photosCount = album.assets.count
@@ -287,14 +249,7 @@ extension GalleryViewController: UICollectionViewDataSource {
 
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch contentType {
-        case .albums:
-            return CGSize(width: collectionView.bounds.width - CollectionConstants.itemInset * 2,
-                          height: CollectionConstants.albumsCollectionItemHeight)
-            
-        case .mediaItems:
-            return thumbnailSizeForContent(.mediaItems)
-        }
+        return thumbnailSizeForContent(contentType)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -315,7 +270,7 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch contentType {
         case .albums:
-            if let album = albums[safeIndex: indexPath.row] {
+            if let album = albumsDataSource[safeIndex: indexPath.row] {
                 displayAlbum(album)
             }
             
@@ -323,32 +278,60 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
             
             switch mediaType {
             case .photos:
-                // Show fullscreen image
+                
+                // Get fullscreen image, i.e. with highest quality.
                 if let asset = selectedAlbum?.assets[safeIndex: indexPath.row] {
-                    setupRefreshAnimation()
+                    startRefreshAnimation()
                     contentCollectionView.isHidden = true
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         self.thumbnailForAsset(asset, size: PHImageManagerMaximumSize) { [weak self] image in
                             if let photo = image {
-                                self?.onPhotoDidSelectCompletion?(photo)
-                                
-                                self?.contentCollectionView.isHidden = false
+                                self?.delegate?.didSelectPhotoFromGallery(photo)
                                 self?.stopRefreshAnimation()
+                                self?.contentCollectionView.isHidden = false
                             }
                         }
                     }
                 }
-                
             case .videos:
                 if let asset = selectedAlbum?.assets[safeIndex: indexPath.row] {
-                    onVideoDidSelectCompletion?(asset)
+                    delegate?.didSelectVideoFromGallery(asset)
                 }
-                
             default:
                 break
             }
             
+        }
+    }
+    
+    private func thumbnailSizeForContent(_ contentType: ContentType) -> CGSize {
+        switch contentType {
+        case .albums:
+            return CGSize(width: contentCollectionView.bounds.width - CollectionConstants.itemInset * 2,
+                          height: CollectionConstants.albumsCollectionItemHeight)
+            
+        case .mediaItems:
+            let cellWidth = (view.bounds.width - CollectionConstants.itemInset * 4)/3
+            let cellHeight = cellWidth
+            
+            return CGSize(width: cellWidth,
+                          height: cellHeight)
+        }
+    }
+    
+    private func displayAlbum(_ album: GalleryAlbum) {
+        selectedAlbum = album
+        albumTitleLabel.text = album.collection.localizedTitle
+        
+        startRefreshAnimation()
+        contentCollectionView.isHidden = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.contentType = .mediaItems
+            self.contentCollectionView.reloadData()
+            self.stopRefreshAnimation()
+            self.contentCollectionView.isHidden = false
         }
     }
 }
@@ -356,13 +339,14 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Refresh animation
 
 private extension GalleryViewController {
-    func setupRefreshAnimation() {
-//        let gif = UIImage(gifName: "Refreshing.gif")
-//        refreshAnimationImageView.setGifImage(gif, loopCount: -1)
-//        refreshAnimationImageView.startAnimatingGif()
+    func startRefreshAnimation() {
+        activityIndicatorView.isHidden = false
+        activityIndicatorView.startAnimating()
     }
     
     func stopRefreshAnimation() {
-//        refreshAnimationImageView.stopAnimatingGif()
+        activityIndicatorView.isHidden = true
+        activityIndicatorView.stopAnimating()
     }
 }
+
